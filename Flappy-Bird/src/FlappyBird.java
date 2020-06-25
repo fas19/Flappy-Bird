@@ -9,9 +9,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
@@ -27,8 +31,17 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener {
 	public Boolean gameOver = false;
 	public Boolean started = false;
 	public int score = 0;
+	public BufferedImage birdImage;
 	
 	public FlappyBird() {
+		try {
+			URL url = getClass().getResource("bird.png");
+			System.out.println(url.toString());
+			birdImage = ImageIO.read(new File(url.getPath()));
+		}
+		catch(Exception e) {
+			System.out.println(e.toString());
+		}
 		Dimension screenSize = new Dimension(WIDTH, HEIGHT);
 		Timer timer = new Timer(20, this);
 		JFrame jframe = new JFrame();
@@ -124,8 +137,10 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener {
 			
 			for(Rectangle column : columns) {
 				if(column.y == 0 && bird.x + bird.width/2 > column.x + column.width/2 -10 && bird.x + bird.width/2 < column.x+column.width/2+10) {
-					System.out.println("SKORE");
+					if(!gameOver) {
+					//System.out.println("SKORE");
 					score++;
+					}
 				}
 				
 				if(column.intersects(bird)) {
@@ -162,7 +177,8 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener {
 		
 		//bird
 		g.setColor(Color.red);
-		g.fillRect(bird.x, bird.y, bird.width, bird.height);
+		//g.fillRect(bird.x, bird.y, bird.width, bird.height);
+		g.drawImage(birdImage, bird.x, bird.y, null);
 		
 		g.setColor(Color.orange);
 		g.fillRect(0, HEIGHT-120, WIDTH, 150);
